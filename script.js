@@ -99,38 +99,38 @@ function countDostawa() {
 }
 
 function countSumy(){
-  sumaDostawaIndicatorIndexes = getArrayOfSumaIndicators(DOSTAWA)
-  sumaDostawaSztuki = 0 
-  sumaDostawaSuma = 0
-  for(var i = 0 ; i < sumaDostawaIndicatorIndexes.length ; i++){
-    cellSztuki = joinCell('D',sumaDostawaIndicatorIndexes[i])
-    cellSuma = joinCell('F',sumaDostawaIndicatorIndexes[i])
-    sztuka = getSheetType(sheetType).getRange(cellSztuki).getValue()
-    suma = getSheetType(sheetType).getRange(cellSuma).getValue()
-    sumaDostawaSztuki += sztuka
-    sumaDostawaSuma += suma
+  var sumaDostawaIndicatorIndexes = getArrayOfSumaIndicators(DOSTAWA)
+  var sumaDostawaSztuki = 0 
+  var sumaDostawaSuma = 0
+  for(var i = 1 ; i < sumaDostawaIndicatorIndexes.length ; i++){//i=1 bo pomijamy "Data" header
+    var cellSztuki = joinCell('D',sumaDostawaIndicatorIndexes[i]);
+    var cellSuma = joinCell('F',sumaDostawaIndicatorIndexes[i]);
+    var sztuka = getSheetType(DOSTAWA).getRange(cellSztuki).getValue();
+    var suma = getSheetType(DOSTAWA).getRange(cellSuma).getValue();
+    var sumaDostawaSztuki = sumaDostawaSztuki + sztuka;
+    var sumaDostawaSuma = sumaDostawaSuma + suma;
   }
-  sumaZwrotIndicatorIndexes = getArrayOfSumaIndicators(DOSTAWA)
-  sumaZwrotSztuki = 0 
-  sumaZwrotSuma = 0
-  for(var i = 0 ; i < sumaZwrotIndicatorIndexes.length ; i++){
-    cellSztuki = joinCell('D',sumaZwrotIndicatorIndexes[i])
-    cellSuma = joinCell('F',sumaZwrotIndicatorIndexes[i])
-    sztuka = getSheetType(sheetType).getRange(cellSztuki).getValue()
-    suma = getSheetType(sheetType).getRange(cellSuma).getValue()
-    sumaZwrotSztuki += sztuka
-    sumaZwrotSuma += suma
+  var sumaZwrotIndicatorIndexes = getArrayOfSumaIndicators(ZWROT)
+  var sumaZwrotSztuki = 0 
+  var sumaZwrotSuma = 0
+  for(var i = 1 ; i < sumaZwrotIndicatorIndexes.length ; i++){
+    var cellSztuki = joinCell('D',sumaZwrotIndicatorIndexes[i]);
+    var cellSuma = joinCell('F',sumaZwrotIndicatorIndexes[i]);
+    var sztuka = getSheetType(ZWROT).getRange(cellSztuki).getValue();
+    var suma = getSheetType(ZWROT).getRange(cellSuma).getValue();
+    var sumaZwrotSztuki = sumaZwrotSztuki + sztuka;
+    var sumaZwrotSuma = sumaZwrotSuma + suma;
   }
-  sumaWplataIndicatorIndexes = getArrayOfSumaIndicators(DOSTAWA)
-  sumaWplataSztuki = 0 
-  sumaWplataSuma = 0
-  for(var i = 0 ; i < sumaWplataIndicatorIndexes.length ; i++){
-    cellSztuki = joinCell('D',sumaWplataIndicatorIndexes[i])
-    cellSuma = joinCell('F',sumaWplataIndicatorIndexes[i])
-    sztuka = getSheetType(sheetType).getRange(cellSztuki).getValue()
-    suma = getSheetType(sheetType).getRange(cellSuma).getValue()
-    sumaWplataSztuki += sztuka
-    sumaWplataSuma += suma
+  var sumaWplataIndicatorIndexes = getArrayOfSumaIndicators(WPLATA)
+  var sumaWplataSztuki = 0 
+  var sumaWplataSuma = 0
+  for(var i = 1 ; i < sumaWplataIndicatorIndexes.length ; i++){
+    var cellSztuki = joinCell('D',sumaWplataIndicatorIndexes[i]);
+    var cellSuma = joinCell('F',sumaWplataIndicatorIndexes[i]);
+    var sztuka = getSheetType(WPLATA).getRange(cellSztuki).getValue();
+    var suma = getSheetType(WPLATA).getRange(cellSuma).getValue();
+    var sumaWplataSztuki = sumaWplataSztuki+ sztuka;
+    var sumaWplataSuma = sumaWplataSuma + suma;
   }
   
   cellDostawaSztuki = joinCell('B','2')
