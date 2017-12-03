@@ -1,3 +1,5 @@
+//TODO dodać podsumowanie do każdego typu transakcji
+
 COLUMNS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
 COLOR_DOSTAWA = '#C5E89B'
@@ -15,8 +17,8 @@ COLUMNS_INDEX = {
 COLUMNS__WPLATA_INDEX = {
   COL_LP:0,  COL_DATE:1,  COL_MODEL:2,  COL_SZTUKI:3,  COL_CENA_SZT:4,  COL_CENA_SZT_SPRZEDAZ:5,  COL_SUMA:6, INNE:7
 }
-DOSTAWA = 'dostawa';ZWROT = 'zwrot';WPLATA = 'wplata';SUMA = 'suma';DATA = 'Data';
-DOSTAWA_NAME = 'Dostawa' ; ZWROT_NAME = 'Zwrot'; WPLATA_NAME = 'Wplata' ; WSZYSTKO_NAME = 'Wszystko';
+DOSTAWA = 'dostawa';ZWROT = 'zwrot';WPLATA = 'wplata';SUMA = 'suma';DATA = 'Data';PODSUMOWANIE='Podsumowanie'
+DOSTAWA_NAME = 'Dostawa' ; ZWROT_NAME = 'Zwrot'; WPLATA_NAME = 'Wplata' ; WSZYSTKO_NAME = 'Wszystko';PODSUMOWANIE_NAME ='Podsumowanie';
 
 LEFT_CELL = 'A'
 RIGHT_CELL = 'G'
@@ -27,28 +29,37 @@ var sheetDostawa = ss.getSheets()[0];
 var sheetZwrot = ss.getSheets()[1];
 var sheetWplata = ss.getSheets()[2];
 var sheetSuma = ss.getSheets()[3];
+var sheetPodsumowanie = ss.getSheets()[4];
 
 var sheetDostawa1 = ss.getSheetByName(DOSTAWA_NAME)
 var sheetZwrot1 = ss.getSheetByName(ZWROT_NAME)
 var sheetWplata1 = ss.getSheetByName(WPLATA_NAME)
 var sheetSuma1 = ss.getSheetByName(WSZYSTKO_NAME)
+var sheetPodsumowanie1 = ss.getSheetByName(PODSUMOWANIE_NAME)
 
 sheetDict = {
   DOSTAWA:sheetDostawa,
   ZWROT:sheetZwrot,
   WPLATA:sheetWplata,
   SUMA:sheetSuma,
+  PODSUMOWANIE:sheetPodsumowanie,
 }
-
-
 
 dataList = {
   DOSTAWA: sheetDostawa.getDataRange().getValues(),
   ZWROT: sheetZwrot.getDataRange().getValues(),
   WPLATA: sheetWplata.getDataRange().getValues(),
   SUMA: sheetSuma.getDataRange().getValues(),
+  PODSUMOWANIE: sheetPodsumowanie.getDataRange().getValues(),
 }
 
+//dataList123 = {
+// DOSTAWA: sheetDostawa1.getDataRange().getValues(),
+//  ZWROT: sheetZwrot1.getDataRange().getValues(),
+ // WPLATA: sheetWplata1.getDataRange().getValues(),
+//  SUMA: sheetSuma1.getDataRange().getValues(),
+//  PODSUMOWANIE: sheetPodsumowanie1.getDataRange().getValues(),
+//}
 ///////////////////////////////// FUNCTION START /////////////////////////////////
 
 function main(){
@@ -79,6 +90,7 @@ function countDostawa() {
     countSumaSztuki(row, row_val, DOSTAWA)
     countSumaSuma(row, row_val, DOSTAWA)
   }
+  countSummary(sumaIndicatorIndexes)  
 }
 ////////////////////////////////////////////////////
 /////////////   POLICZ TABELE ZWROT //////////////
@@ -94,6 +106,7 @@ function countZwrot() {
     countSumaSztuki(row, row_val, ZWROT)
     countSumaSuma(row, row_val, ZWROT)
   }
+  countSummary()
 }
 ////////////////////////////////////////////////////
 /////////////   POLICZ TABELE WPLATA ///////////////
@@ -109,6 +122,8 @@ function countWplata(){
     countSumaSztuki(row, row_val, WPLATA)
     countSumaSumaWplata(row, row_val, WPLATA)
   }
+  
+  countSummary()
 }
 ////////////////////////////////////////////////////
 /////////////   POLICZ TABELE WSZYSTKO /////////////
@@ -199,6 +214,111 @@ function countWszystko(){
   
   var a = 1
   
+}
+
+
+function countPodsumowanie(){
+  //DOSTAWA//
+  var dostawaData = dataList.DOSTAWA;
+  var dostawaSumaArray = getArrayOfSumaIndicators(DOSTAWA)
+  var lastRowNumber = dostawaSumaArray[dostawaSumaArray.length-1]
+  var modelsList = {}
+  for(var i = 1 ; i<=lastRowNumber ; i++){ // i =2 bo 1 = header
+    var modelName = dostawaData[i][2];
+    var sztuki = dostawaData[i][3];
+    
+    if (modelName != '') { //jeśli sie rowna '' to pomiń
+    
+      if (modelName in modelsList){ // jesli jest juz taki model to dodaj sztuki
+        var currentAmount = modelsList[modelName][0]
+        if (currentAmount != undefined){
+          modelsList[modelName][0] = currentAmount+sztuki
+        }else{
+          modelsList[modelName][0] = sztuki
+        }
+      } else { // jeśli nie ma jeszcze
+        modelsList[modelName] = new Array(3)
+        modelsList[modelName][0] = sztuki
+      }
+    }
+  }
+  //ZWROT//
+  var zwrotData = dataList.ZWROT;
+  var zwrotSumaArray = getArrayOfSumaIndicators(ZWROT)
+  var lastRowNumber = zwrotSumaArray[zwrotSumaArray.length-1]
+//  var modelsList = {}
+  for(var i = 1 ; i<=lastRowNumber ; i++){ // i =2 bo 1 = header
+    var modelName = zwrotData[i][2];
+    var sztuki = zwrotData[i][3];
+    
+    if (modelName != '') { //jeśli sie rowna '' to pomiń
+    
+      if (modelName in modelsList){ // jesli jest juz taki model to dodaj sztuki
+        var currentAmount = modelsList[modelName][1]
+        if (currentAmount != undefined){
+          modelsList[modelName][1] = currentAmount+sztuki
+        }else{
+          modelsList[modelName][1] = sztuki
+        }
+      } else { // jeśli nie ma jeszcze
+        modelsList[modelName] = new Array(3);
+        modelsList[modelName][1] = sztuki
+      }
+    }
+  }
+  // WPLATA //
+  
+  var wplataData = dataList.WPLATA;
+  var wplataSumaArray = getArrayOfSumaIndicators(WPLATA)
+  var lastRowNumber = wplataSumaArray[wplataSumaArray.length-1]
+  //  var modelsList = {}
+  for(var i = 1 ; i<=lastRowNumber ; i++){ // i =2 bo 1 = header
+    var modelName = wplataData[i][2];
+    var sztuki = wplataData[i][3];
+    
+    if (modelName != '') { //jeśli sie rowna '' to pomiń
+    
+      if (modelName in modelsList){ // jesli jest juz taki model to dodaj sztuki
+        var currentAmount = modelsList[modelName][2]
+        if (currentAmount != undefined){
+          modelsList[modelName][2] = currentAmount+sztuki
+        }else{
+          modelsList[modelName][2] = sztuki
+        }
+      } else { // jeśli nie ma jeszcze
+        modelsList[modelName] = new Array(3);
+        modelsList[modelName][2] = sztuki
+      }
+    }
+  }
+  iterator = 2 // bo =1 to header
+  for (var model in modelsList){
+    cellLp = joinCell('A',iterator)
+    cellModel = joinCell('B',iterator)
+    cellDostawa = joinCell('C',iterator)
+    cellZwrot = joinCell('D',iterator)
+    cellWplata = joinCell('E',iterator)
+    cellSuma = joinCell('F',iterator)
+    getSheetType(PODSUMOWANIE).getRange(cellLp).setValue(iterator)
+    getSheetType(PODSUMOWANIE).getRange(cellModel).setValue(model)
+    getSheetType(PODSUMOWANIE).getRange(cellDostawa).setValue(modelsList.model[0])
+    getSheetType(PODSUMOWANIE).getRange(cellZwrot).setValue(modelsList.model[1])
+    getSheetType(PODSUMOWANIE).getRange(cellWplata).setValue(modelsList.model[2])
+    
+    suma = 0 
+    for (var i = 0 ; i < 3 ; i ++){
+      value = modelsList.model[i]
+      if (value != undefined){
+        suma += value;
+      }
+    }
+    getSheetType(PODSUMOWANIE).getRange(cellSuma).setValue(suma)
+
+    
+    
+    iterator +=1
+  }
+  var kut = 'qwe'
 }
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
@@ -352,6 +472,9 @@ function countSumaSumaWplata(row, firstLast, sheetType){
   targetCell = joinCell(COL_SUMA_WPLATA, row)
   getSheetType(sheetType).getRange(targetCell).setValue(sumFormula(firstCell,lastCell));
   getSheetType(sheetType).getRange(targetCell).setBackground(COLOR_SUMA);
+}
+
+function countSummary(){
 }
 
 function countAvgCenaSzt(indexes){ 
