@@ -19,6 +19,7 @@ COLUMNS__WPLATA_INDEX = {
 }
 DOSTAWA = 'dostawa';ZWROT = 'zwrot';WPLATA = 'wplata';SUMA = 'suma';DATA = 'Data';PODSUMOWANIE='Podsumowanie'
 DOSTAWA_NAME = 'Dostawa' ; ZWROT_NAME = 'Zwrot'; WPLATA_NAME = 'Wplata' ; WSZYSTKO_NAME = 'Wszystko';PODSUMOWANIE_NAME ='Podsumowanie';
+SUMY = 'SumyCzastkowe';
 
 LEFT_CELL = 'A'
 RIGHT_CELL = 'G'
@@ -30,12 +31,15 @@ var sheetZwrot = ss.getSheets()[1];
 var sheetWplata = ss.getSheets()[2];
 var sheetSuma = ss.getSheets()[3];
 var sheetPodsumowanie = ss.getSheets()[4];
+var sheetSumy = ss.getSheets()[5];
+
 
 var sheetDostawa1 = ss.getSheetByName(DOSTAWA_NAME)
 var sheetZwrot1 = ss.getSheetByName(ZWROT_NAME)
 var sheetWplata1 = ss.getSheetByName(WPLATA_NAME)
 var sheetSuma1 = ss.getSheetByName(WSZYSTKO_NAME)
 var sheetPodsumowanie1 = ss.getSheetByName(PODSUMOWANIE_NAME)
+var sheetSumy1 = ss.getSheetByName(SUMY)
 
 sheetDict = {
   DOSTAWA:sheetDostawa,
@@ -43,6 +47,7 @@ sheetDict = {
   WPLATA:sheetWplata,
   SUMA:sheetSuma,
   PODSUMOWANIE:sheetPodsumowanie,
+  SUMY:sheetSumy,
 }
 
 dataList = {
@@ -51,6 +56,7 @@ dataList = {
   WPLATA: sheetWplata.getDataRange().getValues(),
   SUMA: sheetSuma.getDataRange().getValues(),
   PODSUMOWANIE: sheetPodsumowanie.getDataRange().getValues(),
+  SUMY: sheetSumy.getDataRange().getValues(),
 }
 
 //dataList123 = {
@@ -304,7 +310,7 @@ function countPodsumowanie(){
     getSheetType(PODSUMOWANIE).getRange(cellDostawa1).setValue('Dostawa')
     getSheetType(PODSUMOWANIE).getRange(cellZwrot1).setValue('Zwrot')
     getSheetType(PODSUMOWANIE).getRange(cellWplata1).setValue('Wplata')
-    getSheetType(PODSUMOWANIE).getRange(cellSuma1).setValue('Suma')    
+    getSheetType(PODSUMOWANIE).getRange(cellSuma1).setValue('Zostało sztuk')    
  
     cellLp = joinCell('A',iterator)
     cellModel = joinCell('B',iterator)
@@ -335,6 +341,65 @@ function countPodsumowanie(){
     iterator +=1
   }
   var kut = 'qwe'
+}
+
+
+function countSumy(){
+    
+    var sumaDostawaIndicatorIndexes = getArrayOfSumaIndicators(DOSTAWA);
+    var sumaDostawaSztuki = 0; 
+    var sumaDostawaSuma = 0;
+    for(var i = 1 ; i < sumaDostawaIndicatorIndexes.length ; i++){//i=1 bo pomijamy "Data" header
+      var cellSztuki = joinCell('D',sumaDostawaIndicatorIndexes[i]);
+      var cellSuma = joinCell('F',sumaDostawaIndicatorIndexes[i]);
+      var sztuka = getSheetType(DOSTAWA).getRange(cellSztuki).getValue();
+      var suma = getSheetType(DOSTAWA).getRange(cellSuma).getValue();
+      sumaDostawaSztuki = sumaDostawaSztuki + sztuka;
+      sumaDostawaSuma = sumaDostawaSuma + suma;
+    }
+    var sumaZwrotIndicatorIndexes = getArrayOfSumaIndicators(ZWROT);
+    var sumaZwrotSztuki = 0;
+    var sumaZwrotSuma = 0;
+    for(var i = 1 ; i < sumaZwrotIndicatorIndexes.length ; i++){
+      var cellSztuki = joinCell('D',sumaZwrotIndicatorIndexes[i]);
+      var cellSuma = joinCell('F',sumaZwrotIndicatorIndexes[i]);
+      var sztuka = getSheetType(ZWROT).getRange(cellSztuki).getValue();
+      var suma = getSheetType(ZWROT).getRange(cellSuma).getValue();
+      sumaZwrotSztuki = sumaZwrotSztuki + sztuka;
+      sumaZwrotSuma = sumaZwrotSuma + suma;
+    }
+    var sumaWplataIndicatorIndexes = getArrayOfSumaIndicators(WPLATA);
+    var sumaWplataSztuki = 0;
+    var sumaWplataSuma = 0;
+    for(var i = 1 ; i < sumaWplataIndicatorIndexes.length ; i++){
+      var cellSztuki = joinCell('D',sumaWplataIndicatorIndexes[i]);
+      var cellSuma = joinCell('F',sumaWplataIndicatorIndexes[i]);
+      var sztuka = getSheetType(WPLATA).getRange(cellSztuki).getValue();
+      var suma = getSheetType(WPLATA).getRange(cellSuma).getValue();
+      sumaWplataSztuki = sumaWplataSztuki + sztuka;
+      sumaWplataSuma = sumaWplataSuma + suma;
+    }
+    
+    getSheetType(SUMY).getRange('B1').setValue('Sztuki')
+    getSheetType(SUMY).getRange('C1').setValue('Suma')
+    getSheetType(SUMY).getRange('A2').setValue('Dostawa')
+    getSheetType(SUMY).getRange('A3').setValue('Zwrot')
+    getSheetType(SUMY).getRange('A4').setValue('Wplata')
+    
+    cellDostawaSztuki = joinCell('B','2')
+    cellDostawaSuma = joinCell('C','2')
+    cellZwrotSztuki = joinCell('B','3')
+    cellZwrotSuma = joinCell('C','3')  
+    wplataSztuki = joinCell('B','4')  
+    wplataSuma = joinCell('C','4')  
+    
+    getSheetType(SUMY).getRange(cellDostawaSztuki).setValue(sumaDostawaSztuki)
+    getSheetType(SUMY).getRange(cellDostawaSuma).setValue(sumaDostawaSuma)
+    getSheetType(SUMY).getRange(cellZwrotSztuki).setValue(sumaZwrotSztuki)
+    getSheetType(SUMY).getRange(cellZwrotSuma).setValue(sumaZwrotSuma)
+    getSheetType(SUMY).getRange(wplataSztuki).setValue(sumaWplataSztuki)
+    getSheetType(SUMY).getRange(wplataSuma).setValue(sumaWplataSuma) 
+    
 }
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
@@ -555,6 +620,8 @@ function getSheetType(sheetType){
     data = sheetDict.SUMA
   else if(sheetType == PODSUMOWANIE)
     data = sheetDict.PODSUMOWANIE
+  else if(sheetType == SUMY)
+    data = sheetDict.SUMY
   else
     data = 'blad'
     
@@ -573,6 +640,8 @@ function getDataType(sheetType){
     data = dataList.SUMA
   else if(sheetType == PODSUMOWANIE)
     data = dataList.PODSUMOWANIE
+  else if(sheetType == SUMY)
+    data = sheetDict.SUMY
   else
     data = 'blad'
     
