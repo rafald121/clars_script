@@ -404,11 +404,11 @@ function countSumy(){
     
     getSheetType(SUMY).getRange(cellDostawaSztuki).setValue(sumaDostawaSztuki)
     getSheetType(SUMY).getRange(cellDostawaSuma).setValue(sumaDostawaSuma)
-    getSheetType(SUMY).getRange(cellZwrotSztuki).setValue(sumaZwrotSztuki)
-    getSheetType(SUMY).getRange(cellZwrotSuma).setValue(sumaZwrotSuma)
-    getSheetType(SUMY).getRange(wplataSztuki).setValue(sumaWplataSztuki)
-    getSheetType(SUMY).getRange(wplataSuma).setValue(sumaWplataSuma) 
-    getSheetType(SUMY).getRange(wplataSuma).setValue(sumaWplataSuma) 
+    getSheetType(SUMY).getRange(cellZwrotSztuki).setValue(-sumaZwrotSztuki)
+    getSheetType(SUMY).getRange(cellZwrotSuma).setValue(-sumaZwrotSuma)
+    getSheetType(SUMY).getRange(wplataSztuki).setValue(-sumaWplataSztuki)
+    getSheetType(SUMY).getRange(wplataSuma).setValue(-sumaWplataSuma) 
+//    getSheetType(SUMY).getRange(wplataSuma).setValue(-sumaWplataSuma) 
     
 }
 ////////////////////////////////////////////////////
