@@ -301,20 +301,25 @@ function countPodsumowanie(){
     }
   }
   iterator = 2 // bo =1 to header
+  cellLp1 = joinCell('A',1)
+  cellModel1 = joinCell('B',1)
+  cellDostawa1 = joinCell('C',1)
+  cellZwrot1 = joinCell('D',1)
+  cellWplata1 = joinCell('E',1)
+  cellSuma1 = joinCell('F',1)
+  cellCenaSukienki1 = joinCell('G',1)
+  cellSumaNaSklepie1 = joinCell('H',1)
+  getSheetType(PODSUMOWANIE).getRange(cellLp1).setValue('Lp')
+  getSheetType(PODSUMOWANIE).getRange(cellModel1).setValue('Model')
+  getSheetType(PODSUMOWANIE).getRange(cellDostawa1).setValue('Dostawa')
+  getSheetType(PODSUMOWANIE).getRange(cellZwrot1).setValue('Zwrot')
+  getSheetType(PODSUMOWANIE).getRange(cellWplata1).setValue('Wplata')
+  getSheetType(PODSUMOWANIE).getRange(cellSuma1).setValue('Zostało sztuk')    
+  getSheetType(PODSUMOWANIE).getRange(cellCenaSukienki1).setValue('Cena za sztuke')   
+  getSheetType(PODSUMOWANIE).getRange(cellSumaNaSklepie1).setValue('Wartość sukienek w sklepie')   
+  
   for (var model in modelsList){
-    cellLp1 = joinCell('A',1)
-    cellModel1 = joinCell('B',1)
-    cellDostawa1 = joinCell('C',1)
-    cellZwrot1 = joinCell('D',1)
-    cellWplata1 = joinCell('E',1)
-    cellSuma1 = joinCell('F',1)
-    getSheetType(PODSUMOWANIE).getRange(cellLp1).setValue('Lp')
-    getSheetType(PODSUMOWANIE).getRange(cellModel1).setValue('Model')
-    getSheetType(PODSUMOWANIE).getRange(cellDostawa1).setValue('Dostawa')
-    getSheetType(PODSUMOWANIE).getRange(cellZwrot1).setValue('Zwrot')
-    getSheetType(PODSUMOWANIE).getRange(cellWplata1).setValue('Wplata')
-    getSheetType(PODSUMOWANIE).getRange(cellSuma1).setValue('Zostało sztuk')    
- 
+  
     cellLp = joinCell('A',iterator)
     cellModel = joinCell('B',iterator)
     cellDostawa = joinCell('C',iterator)
@@ -322,6 +327,7 @@ function countPodsumowanie(){
     cellWplata = joinCell('E',iterator)
     cellSuma = joinCell('F',iterator)
     cellCenaSztuka = joinCell('G',iterator)
+    cellSumaNaSklepie = joinCell('H',iterator)
     
     getSheetType(PODSUMOWANIE).getRange(cellLp).setValue(iterator-1)
     getSheetType(PODSUMOWANIE).getRange(cellModel).setValue(model)
@@ -343,10 +349,23 @@ function countPodsumowanie(){
       }
     }
     getSheetType(PODSUMOWANIE).getRange(cellSuma).setValue(suma)
+    getSheetType(PODSUMOWANIE).getRange(cellSumaNaSklepie).setValue(suma*modelsPriceList[model])
     
     iterator +=1
   }
-  var kut = 'qwe'
+  
+  cellSumaSztukiFirst = joinCell('F', 2)
+  cellSumaSztukiLast = joinCell('F', iterator-1)
+  cellSumaSumaFirst = joinCell('H', 2)
+  cellSumaSumaLast = joinCell('H', iterator-1)
+  cellSumaSztuki = joinCell('F', iterator)
+  cellSumaSuma = joinCell('H', iterator)
+  
+  var sumaSztukiFormula = sumFormula(cellSumaSztukiFirst, cellSumaSztukiLast)
+  var sumaSumaFormula = sumFormula(cellSumaSumaFirst, cellSumaSumaLast)
+  
+  getSheetType(PODSUMOWANIE).getRange(cellSumaSztuki).setValue(sumaSztukiFormula)
+  getSheetType(PODSUMOWANIE).getRange(cellSumaSuma).setValue(sumaSumaFormula)
 }
 
 
@@ -390,15 +409,18 @@ function countSumy(){
     getSheetType(SUMY).getRange('C1').setValue('Suma')
     getSheetType(SUMY).getRange('A2').setValue('Dostawa')
     getSheetType(SUMY).getRange('A3').setValue('Zwrot')
-    getSheetType(SUMY).getRange('A4').setValue('Wplata brutto')
-    //getSheetType(SUMY).getRange('A5').setValue('Wplata brutto')
+    getSheetType(SUMY).getRange('A4').setValue('Wplata netto')
+    getSheetType(SUMY).getRange('A5').setValue('Wplata brutto')
     
     cellDostawaSztuki = joinCell('B','2')
     cellDostawaSuma = joinCell('C','2')
     cellZwrotSztuki = joinCell('B','3')
     cellZwrotSuma = joinCell('C','3')  
-    wplataSztuki = joinCell('B','4')  
-    wplataSuma = joinCell('C','4')  
+    cellWplataNettoSztuki = joinCell('B', '4')
+    cellWplataNettoSuma = joinCell('C', '4')
+    cellWplataBruttoSztuki = joinCell('B','5')  
+    cellWplataBruttoSuma = joinCell('C','5')  
+
     
     procent = getSheetType(SUMY).getRange('E1').getValue()
     
@@ -406,8 +428,14 @@ function countSumy(){
     getSheetType(SUMY).getRange(cellDostawaSuma).setValue(sumaDostawaSuma)
     getSheetType(SUMY).getRange(cellZwrotSztuki).setValue(-sumaZwrotSztuki)
     getSheetType(SUMY).getRange(cellZwrotSuma).setValue(-sumaZwrotSuma)
-    getSheetType(SUMY).getRange(wplataSztuki).setValue(-sumaWplataSztuki)
-    getSheetType(SUMY).getRange(wplataSuma).setValue(-sumaWplataSuma) 
+   
+    getSheetType(SUMY).getRange(cellWplataNettoSztuki).setValue(-sumaWplataSztuki)
+    getSheetType(SUMY).getRange(cellWplataNettoSuma).setValue(-sumaWplataSuma) 
+    
+    getSheetType(SUMY).getRange(cellWplataBruttoSztuki).setValue(-sumaWplataSztuki)
+    getSheetType(SUMY).getRange(cellWplataBruttoSuma).setValue(-sumaWplataSuma/(1-procent)) 
+    
+
 //    getSheetType(SUMY).getRange(wplataSuma).setValue(-sumaWplataSuma) 
     
 }
