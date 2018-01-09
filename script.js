@@ -146,7 +146,9 @@ function countWszystko(){
   cellCenaNetto = joinCell('F',1)
   cellSuma = joinCell('G',1)
   cellCenaBrutto = joinCell('H',1)
-
+  cellProcentValue = joinCell('I',1)
+//  cellProcentValue = joinCell('J',1)
+  
   getSheetType(SUMA).getRange(cellLp).setValue('Lp')
   getSheetType(SUMA).getRange(cellTyp).setValue('Typ')
   getSheetType(SUMA).getRange(cellData).setValue('Data')
@@ -155,6 +157,14 @@ function countWszystko(){
   getSheetType(SUMA).getRange(cellCenaNetto).setValue('Cena/Sztuka netto')
   getSheetType(SUMA).getRange(cellSuma).setValue('Suma')
   getSheetType(SUMA).getRange(cellCenaBrutto).setValue('Cena/sztuka brutto')
+  
+  procent = getSheetType(WPLATA).getRange(joinCell('I','1')).getValue()
+//  getSheetType(SUMA).getRange(cellProcent).setValue('Procent')
+  getSheetType(SUMA).getRange(cellProcentValue).setValue(procent)
+
+
+
+
 
   firstDateDostawa = getFirstDate(DOSTAWA)
   firstDateZwrot = getFirstDate(ZWROT)
@@ -437,9 +447,13 @@ function countSumy(){
     cellWplataNettoSuma = joinCell('C', '4')
     cellWplataBruttoSztuki = joinCell('B','5')  
     cellWplataBruttoSuma = joinCell('C','5')  
-
+    cellProcent = joinCell('D','1')
+    cellProcentValue = joinCell('E','1')
+    procent = getSheetType(WPLATA).getRange(joinCell('I','1')).getValue()
+    getSheetType(SUMY).getRange(cellProcent).setValue('Procent')
+    getSheetType(SUMY).getRange(cellProcentValue).setValue(procent)
     
-    procent = getSheetType(SUMY).getRange('E1').getValue()
+//    procent = getSheetType(SUMY).getRange('E1').getValue()
     
     getSheetType(SUMY).getRange(cellDostawaSztuki).setValue(sumaDostawaSztuki)
     getSheetType(SUMY).getRange(cellDostawaSuma).setValue(sumaDostawaSuma)
